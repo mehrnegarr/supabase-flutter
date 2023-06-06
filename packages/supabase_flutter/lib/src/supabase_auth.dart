@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:app_links/app_links.dart';
 import 'package:crypto/crypto.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -349,10 +350,15 @@ extension GoTrueClientSignInProvider on GoTrueClient {
         Platform.isIOS;
 
     if (willOpenWebview) {
-      Navigator.of(context).push(PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) {
-        return _OAuthSignInWebView(oAuthUri: uri, redirectTo: redirectTo);
-      }));
+      Navigator.of(context).push(
+        PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) {
+          return _OAuthSignInWebView(
+            oAuthUri: uri,
+            redirectTo: redirectTo,
+            context: context,
+          );
+        }),
+      );
       return true;
     } else {
       LaunchMode launchMode = authScreenLaunchMode;
@@ -417,10 +423,14 @@ class _OAuthSignInWebView extends StatefulWidget {
     Key? key,
     required this.oAuthUri,
     required this.redirectTo,
+    required this.context,
   }) : super(key: key);
 
   final Uri oAuthUri;
   final String? redirectTo;
+
+  /// Used to pop from the original build context when the user presses the back button
+  final BuildContext context;
 
   @override
   State<_OAuthSignInWebView> createState() => _OAuthSignInWebViewState();
@@ -456,8 +466,12 @@ class _OAuthSignInWebViewState extends State<_OAuthSignInWebView> {
       ..loadRequest(widget.oAuthUri)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
-        onPageStarted: (_) => setState(() => isLoading = true),
-        onPageFinished: (_) => setState(() => isLoading = false),
+        onPageStarted: (_) {
+          if (mounted) setState(() => isLoading = true);
+        },
+        onPageFinished: (_) {
+          if (mounted) setState(() => isLoading = false);
+        },
         onWebResourceError: _handleWebResourceError,
         onNavigationRequest: _handleNavigationRequest,
       ));
@@ -465,21 +479,28 @@ class _OAuthSignInWebViewState extends State<_OAuthSignInWebView> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: SafeArea(
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            // WebView
-            WebViewWidget(
-              controller: _controller,
-            ),
-            // Loader
-            if (isLoading)
-              const Center(
-                child: CircularProgressIndicator.adaptive(),
-              )
-          ],
+    return CupertinoApp(
+      home: CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          leading: CupertinoNavigationBarBackButton(
+            onPressed: () => Navigator.of(widget.context).pop(),
+          ),
+        ),
+        child: SafeArea(
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              // WebView
+              WebViewWidget(
+                controller: _controller,
+              ),
+              // Loader
+              if (isLoading)
+                const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                )
+            ],
+          ),
         ),
       ),
     );
