@@ -410,6 +410,14 @@ extension GoTrueClientSignInProvider on GoTrueClient {
     final random = Random.secure();
     return base64Url.encode(List<int>.generate(16, (_) => random.nextInt(256)));
   }
+
+  NoncePair generateNoncePair() {
+    final random = Random.secure();
+    final nonce =
+        base64Url.encode(List<int>.generate(16, (_) => random.nextInt(256)));
+    final hashedNonce = sha256.convert(utf8.encode(nonce)).toString();
+    return NoncePair(nonce: nonce, hashedNonce: hashedNonce);
+  }
 }
 
 class _OAuthSignInWebView extends StatefulWidget {
@@ -484,4 +492,14 @@ class _OAuthSignInWebViewState extends State<_OAuthSignInWebView> {
       ),
     );
   }
+}
+
+class NoncePair {
+  final String nonce;
+  final String hashedNonce;
+
+  NoncePair({
+    required this.nonce,
+    required this.hashedNonce,
+  });
 }
