@@ -1,4 +1,4 @@
-typedef BindingCallback = void Function(dynamic payload, [dynamic ref]);
+typedef BindingCallback = void Function(dynamic payload, dynamic ref);
 
 class Binding {
   String type;

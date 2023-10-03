@@ -1,13 +1,4 @@
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:meta/meta.dart';
-import 'package:realtime_client/realtime_client.dart';
-import 'package:realtime_client/src/constants.dart';
-import 'package:realtime_client/src/push.dart';
-import 'package:realtime_client/src/retry_timer.dart';
-import 'package:realtime_client/src/transformers.dart';
-import 'package:realtime_client/src/types.dart';
+part of 'realtime_client.dart';
 
 class RealtimeChannel {
   final Map<String, List<Binding>> _bindings = {};
@@ -401,7 +392,7 @@ class RealtimeChannel {
     return payload;
   }
 
-  bool isMember(String? topic) {
+  bool _isMember(String? topic) {
     return this.topic == topic;
   }
 
