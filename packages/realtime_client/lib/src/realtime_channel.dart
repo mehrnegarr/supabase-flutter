@@ -60,7 +60,7 @@ class RealtimeChannel {
       _rejoinTimer.scheduleTimeout();
     });
 
-    onEvents(ChannelEvents.reply.eventName(), ChannelFilter(), (payload,
+    _onEvents(ChannelEvents.reply.eventName(), ChannelFilter(), (payload,
         [ref]) {
       trigger(replyEventName(ref), payload);
     });
@@ -218,13 +218,13 @@ class RealtimeChannel {
 
   /// Registers a callback that will be executed when the channel closes.
   void _onClose(Function callback) {
-    onEvents(ChannelEvents.close.eventName(), ChannelFilter(),
+    _onEvents(ChannelEvents.close.eventName(), ChannelFilter(),
         (reason, [ref]) => callback());
   }
 
   /// Registers a callback that will be executed when the channel encounteres an error.
   void _onError(void Function(String?) callback) {
-    onEvents(ChannelEvents.error.eventName(), ChannelFilter(),
+    _onEvents(ChannelEvents.error.eventName(), ChannelFilter(),
         (reason, [ref]) => callback(reason?.toString()));
   }
 
@@ -233,10 +233,10 @@ class RealtimeChannel {
     ChannelFilter filter,
     BindingCallback callback,
   ) {
-    return onEvents(type.toType(), filter, callback);
+    return _onEvents(type.toType(), filter, callback);
   }
 
-  RealtimeChannel onEvents(
+  RealtimeChannel _onEvents(
       String type, ChannelFilter filter, BindingCallback callback) {
     final typeLower = type.toLowerCase();
 

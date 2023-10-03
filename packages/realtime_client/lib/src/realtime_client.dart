@@ -11,12 +11,12 @@ import 'package:realtime_client/src/retry_timer.dart';
 import 'package:realtime_client/src/websocket/websocket.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import 'package:realtime_client/src/push.dart';
 import 'package:realtime_client/src/transformers.dart';
 import 'package:realtime_client/src/types.dart';
 
 part 'realtime_channel.dart';
 part 'realtime_presence.dart';
+part 'push.dart';
 
 typedef WebSocketTransport = WebSocketChannel Function(
   String url,

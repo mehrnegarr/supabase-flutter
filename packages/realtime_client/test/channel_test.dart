@@ -128,7 +128,7 @@ void main() {
 
     test('sets up callback for event', () {
       var callbackCalled = 0;
-      channel.onEvents('event', ChannelFilter(),
+      channel.on(RealtimeListenTypes.broadcast, ChannelFilter(),
           (dynamic payload, [dynamic ref]) => callbackCalled++);
 
       channel.trigger('event', {});
@@ -138,13 +138,13 @@ void main() {
     test('other event callbacks are ignored', () {
       var eventCallbackCalled = 0;
       var otherEventCallbackCalled = 0;
-      channel.onEvents(
-        'event',
+      channel.on(
+        RealtimeListenTypes.broadcast,
         ChannelFilter(),
         (dynamic payload, [dynamic ref]) => eventCallbackCalled++,
       );
-      channel.onEvents(
-        'otherEvent',
+      channel.on(
+        RealtimeListenTypes.presence,
         ChannelFilter(),
         (dynamic payload, [dynamic ref]) => otherEventCallbackCalled++,
       );
@@ -156,12 +156,12 @@ void main() {
 
     test('"*" bind all events', () {
       var callbackCalled = 0;
-      channel.onEvents('realtime', ChannelFilter(event: '*'),
+      channel.on(RealtimeListenTypes.broadcast, ChannelFilter(event: '*'),
           (dynamic payload, [dynamic ref]) => callbackCalled++);
 
-      channel.trigger('realtime', {'event': 'INSERT'});
-      channel.trigger('realtime', {'event': 'UPDATE'});
-      channel.trigger('realtime', {'event': 'DELETE'});
+      channel.trigger('broadcast', {'event': 'INSERT'});
+      channel.trigger('broadcast', {'event': 'UPDATE'});
+      channel.trigger('broadcast', {'event': 'DELETE'});
       expect(callbackCalled, 3);
     });
   });
@@ -178,17 +178,17 @@ void main() {
       var callbackEventCalled2 = 0;
       var callbackOtherCalled = 0;
 
-      channel.onEvents('event', ChannelFilter(),
+      channel.on(RealtimeListenTypes.broadcast, ChannelFilter(),
           (dynamic payload, [dynamic ref]) => callBackEventCalled1++);
-      channel.onEvents('event', ChannelFilter(),
+      channel.on(RealtimeListenTypes.broadcast, ChannelFilter(),
           (dynamic payload, [dynamic ref]) => callbackEventCalled2++);
-      channel.onEvents('other', ChannelFilter(),
+      channel.on(RealtimeListenTypes.presence, ChannelFilter(),
           (dynamic payload, [dynamic ref]) => callbackOtherCalled++);
 
-      channel.off('event', {});
+      channel.off('broadcast', {});
 
-      channel.trigger('event', {}, defaultRef);
-      channel.trigger('other', {}, defaultRef);
+      channel.trigger('broadcast', {}, defaultRef);
+      channel.trigger('presence', {}, defaultRef);
 
       expect(callBackEventCalled1, 0);
       expect(callbackEventCalled2, 0);
@@ -226,7 +226,8 @@ void main() {
     });
 
     test("able to unsubscribe from * subscription", () {
-      channel.onEvents('*', ChannelFilter(), (payload, [ref]) {});
+      channel.on(RealtimeListenTypes.postgresChanges, ChannelFilter(),
+          (payload, [ref]) {});
       expect(socket.channels.length, 1);
 
       channel.unsubscribe();
