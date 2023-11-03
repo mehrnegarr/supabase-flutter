@@ -1,13 +1,19 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
-  await Supabase.initialize(url: 'SUPABASE_URL', anonKey: 'SUPABASE_ANON_KEY');
+  await Supabase.initialize(
+    url: 'https://kkdojnfmhutahaeeyvfc.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrZG9qbmZtaHV0YWhhZWV5dmZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTg4NzAyMTksImV4cCI6MjAxNDQ0NjIxOX0.l7Eyk4uMoDhG2DrQnA4CfXdfin3urbmBn-z9TzyE920',
+  );
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +25,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyWidget extends StatefulWidget {
-  const MyWidget({Key? key}) : super(key: key);
+  const MyWidget({super.key});
 
   @override
   State<MyWidget> createState() => _MyWidgetState();
@@ -56,7 +62,7 @@ class _MyWidgetState extends State<MyWidget> {
 }
 
 class _LoginForm extends StatefulWidget {
-  const _LoginForm({Key? key}) : super(key: key);
+  const _LoginForm();
 
   @override
   State<_LoginForm> createState() => _LoginFormState();
@@ -106,10 +112,12 @@ class _LoginFormState extends State<_LoginForm> {
                       password: password,
                     );
                   } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Login failed'),
-                      backgroundColor: Colors.red,
-                    ));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Login failed'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
                     setState(() {
                       _loading = false;
                     });
@@ -131,10 +139,12 @@ class _LoginFormState extends State<_LoginForm> {
                       password: password,
                     );
                   } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Signup failed'),
-                      backgroundColor: Colors.red,
-                    ));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Signup failed'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
                     setState(() {
                       _loading = false;
                     });
@@ -148,7 +158,7 @@ class _LoginFormState extends State<_LoginForm> {
 }
 
 class _ProfileForm extends StatefulWidget {
-  const _ProfileForm({Key? key}) : super(key: key);
+  const _ProfileForm();
 
   @override
   State<_ProfileForm> createState() => _ProfileFormState();
